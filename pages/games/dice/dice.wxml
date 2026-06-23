@@ -1,0 +1,53 @@
+<view class="container">
+  <text class="title">🎲 骰子游戏</text>
+
+  <!-- 骰子数量选择 -->
+  <view class="count-selector">
+    <view class="count-btn {{diceCount <= 1 ? 'disabled' : ''}}" bindtap="changeDiceCount" data-action="dec">−</view>
+    <view class="count-info">
+      <text class="count-label">骰子数量</text>
+      <text class="count-value">{{diceCount}}</text>
+    </view>
+    <view class="count-btn {{diceCount >= 6 ? 'disabled' : ''}}" bindtap="changeDiceCount" data-action="inc">+</view>
+  </view>
+
+  <!-- 3D 骰子展示区 -->
+  <view class="dice-scene">
+    <view class="dice-stage" wx:for="{{dice}}" wx:key="id">
+      <view class="dice-cube {{noAnim ? 'no-anim' : ''}}" style="transform: {{item.transform}};">
+        <view class="dice-face face-{{face.name}}" wx:for="{{diceFaces}}" wx:for-item="face" wx:key="name">
+          <view class="pip-grid">
+            <view class="pip-cell" wx:for="{{pipIndices}}" wx:for-item="pi" wx:key="*this">
+              <view class="pip" wx:if="{{pipLayouts[face.value][pi]}}"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 总点数 -->
+  <view class="sum-display">
+    <block wx:if="{{!isRolling}}">
+      <text class="sum-label">总点数</text>
+      <text class="sum-value">{{totalSum}}</text>
+    </block>
+    <text class="sum-label" wx:else>🎲 摇骰中...</text>
+  </view>
+
+  <!-- 摇骰子按钮 -->
+  <button class="btn-primary shake-btn" bindtap="roll" disabled="{{isRolling}}">
+    {{isRolling ? '摇骰中...' : '🎲 摇一摇'}}
+  </button>
+
+  <!-- 历史记录 -->
+  <view class="history" wx:if="{{history.length > 0}}">
+    <text class="section-title">历史记录</text>
+    <view class="history-item" wx:for="{{history}}" wx:key="hid">
+      <view class="history-values">
+        <text class="history-die" wx:for="{{item.values}}" wx:for-item="v" wx:key="*this">{{v}}</text>
+      </view>
+      <text class="history-sum">= {{item.sum}}</text>
+    </view>
+  </view>
+</view>

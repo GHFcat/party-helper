@@ -1,0 +1,19 @@
+<view class="container">
+  <form bindsubmit="onFormSubmit">
+    <!-- 头像选择 -->
+    <view class="info-item">
+      <text class="info-label">头像</text>
+      <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="avatar" src="{{ userInfo.avatar  }}" mode="aspectFill"></image>
+      </button>
+    </view>
+
+    <!-- 昵称填写 -->
+    <view class="info-item">
+      <text class="info-label">昵称</text>
+      <input class="nickname-input" type="nickname" name="nickname" placeholder="请输入昵称" value="{{ userInfo.nickName }}" bindblur="onNicknameBlur" />
+    </view>
+    <button class="btn-primary" form-type="submit">保存</button>
+  </form>
+  
+</view>

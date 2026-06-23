@@ -1,0 +1,28 @@
+<view class="container">
+  <text class="title">游戏记录</text>
+
+  <view class="record-list" wx:if="{{records.length > 0}}">
+    <view class="record-item card" wx:for="{{records}}" wx:key="id">
+      <view class="record-header">
+        <text class="game-type">{{item.gameType}}</text>
+        <text class="record-time">{{item.createdAt}}</text>
+      </view>
+      <view class="record-body">
+        <text class="record-info">玩家数：{{item.playerCount}}</text>
+        <text class="record-info">时长：{{item.duration}}分钟</text>
+      </view>
+      <view class="record-result">
+        <text class="result-text">{{item.result}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{records.length === 0}}">
+    <text class="empty-text">还没有游戏记录</text>
+    <text class="empty-hint">快去玩一局吧！</text>
+  </view>
+
+  <view class="load-more" wx:if="{{hasMore}}" bindtap="loadMore">
+    <text>加载更多</text>
+  </view>
+</view>

@@ -1,0 +1,137 @@
+.container {
+  padding: 30rpx;
+  min-height: 100vh;
+}
+
+/* 加入房间 */
+.join-section .card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 48rpx 32rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 32rpx rgba(94, 207, 170, 0.12);
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 40rpx;
+  color: #2E3A3A;
+}
+
+.code-input {
+  background: #F3F6F4;
+  border: 2rpx solid #E6F0EC;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 40rpx;
+  text-align: center;
+  letter-spacing: 16rpx;
+  color: #5ECFAA;
+  margin-bottom: 32rpx;
+}
+
+/* 房间号 */
+.room-code-section {
+  text-align: center;
+  padding: 48rpx 0;
+}
+
+.room-label {
+  font-size: 26rpx;
+  color: #7A9E8E;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.room-code {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx 48rpx;
+  display: inline-block;
+  border: 2rpx solid rgba(94, 207, 170, 0.3);
+  box-shadow: 0 8rpx 32rpx rgba(94, 207, 170, 0.12);
+}
+
+.code-text {
+  font-size: 64rpx;
+  font-weight: bold;
+  letter-spacing: 16rpx;
+  color: #5ECFAA;
+  display: block;
+}
+
+.copy-tip {
+  font-size: 22rpx;
+  color: #A8BDB4;
+  display: block;
+  margin-top: 8rpx;
+}
+
+.share-btn {
+  margin-top: 24rpx;
+  width: 60%;
+}
+
+/* 玩家列表 */
+.players-section {
+  margin-top: 32rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #7A9E8E;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.player-list {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 16rpx 24rpx;
+  box-shadow: 0 6rpx 24rpx rgba(94, 207, 170, 0.1);
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid rgba(94, 207, 170, 0.08);
+}
+
+.player-item:last-child {
+  border-bottom: none;
+}
+
+.player-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+}
+
+.player-name {
+  flex: 1;
+  font-size: 30rpx;
+  color: #2E3A3A;
+}
+
+.player-status {
+  font-size: 24rpx;
+  color: #A8BDB4;
+}
+
+.player-status.ready {
+  color: #5ECFAA;
+}
+
+/* 操作 */
+.action-section {
+  margin-top: 48rpx;
+  padding-bottom: 60rpx;
+}
+
+.start-btn {
+  width: 100%;
+}

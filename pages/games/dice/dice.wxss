@@ -1,0 +1,243 @@
+.container {
+  padding: 30rpx;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #F0F9F6 0%, #FFFFFF 100%);
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin: 32rpx 0 24rpx;
+  color: #2E3A3A;
+}
+
+/* 骰子数量选择器 */
+.count-selector {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 48rpx;
+  padding: 8rpx 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(94, 207, 170, 0.15);
+  margin-bottom: 16rpx;
+}
+
+.count-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #5ECFAA;
+  color: #fff;
+  font-size: 40rpx;
+  line-height: 60rpx;
+  text-align: center;
+  font-weight: bold;
+}
+
+.count-btn.disabled {
+  background: #C8D9D2;
+}
+
+.count-info {
+  padding: 0 36rpx;
+  text-align: center;
+}
+
+.count-label {
+  font-size: 22rpx;
+  color: #7A9E8E;
+  display: block;
+}
+
+.count-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2E3A3A;
+}
+
+/* 3D 骰子场景（梅花状聚拢布局） */
+.dice-scene {
+  position: relative;
+  width: 100%;
+  height: 400rpx;
+  margin: 48rpx 0;
+}
+
+.dice-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120rpx;
+  height: 120rpx;
+  margin-top: -60rpx;
+  margin-left: -60rpx;
+  perspective: 800rpx;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+/* 梅花状聚拢布局：通过 :nth-child(k):nth-last-child(m) 判断总数（=k+m-1）与位置 */
+/* 居中位置（1个的第1个 / 3个的第2个 / 5个的第3个）使用默认 transform: none */
+
+/* 2 个骰子（横向并排） */
+.dice-stage:nth-child(1):nth-last-child(2) { transform: translate(-92rpx, 0); }
+.dice-stage:nth-child(2):nth-last-child(1) { transform: translate(92rpx, 0); }
+
+/* 3 个骰子（倒三角） */
+.dice-stage:nth-child(1):nth-last-child(3) { transform: translate(-92rpx, -92rpx); }
+.dice-stage:nth-child(2):nth-last-child(2) { transform: translate(92rpx, -92rpx); }
+.dice-stage:nth-child(3):nth-last-child(1) { transform: translate(0, 92rpx); }
+
+/* 4 个骰子 */
+.dice-stage:nth-child(1):nth-last-child(4) { transform: translate(-92rpx, -92rpx); }
+.dice-stage:nth-child(2):nth-last-child(3) { transform: translate(92rpx, -92rpx); }
+.dice-stage:nth-child(3):nth-last-child(2) { transform: translate(-92rpx, 92rpx); }
+.dice-stage:nth-child(4):nth-last-child(1) { transform: translate(92rpx, 92rpx); }
+
+/* 5 个骰子（间距加大避免遮挡） */
+.dice-stage:nth-child(1):nth-last-child(5) { transform: translate(-120rpx, -120rpx); }
+.dice-stage:nth-child(2):nth-last-child(4) { transform: translate(120rpx, -120rpx); }
+.dice-stage:nth-child(4):nth-last-child(2) { transform: translate(-120rpx, 120rpx); }
+.dice-stage:nth-child(5):nth-last-child(1) { transform: translate(120rpx, 120rpx); }
+
+/* 6 个骰子（中心1个 + 周围5个，五瓣花分布，半径150rpx） */
+.dice-stage:nth-child(1):nth-last-child(6) { transform: translate(0, -150rpx); }
+.dice-stage:nth-child(2):nth-last-child(5) { transform: translate(143rpx, -46rpx); }
+.dice-stage:nth-child(4):nth-last-child(3) { transform: translate(88rpx, 121rpx); }
+.dice-stage:nth-child(5):nth-last-child(2) { transform: translate(-88rpx, 121rpx); }
+.dice-stage:nth-child(6):nth-last-child(1) { transform: translate(-143rpx, -46rpx); }
+
+.dice-cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1.4s cubic-bezier(0.18, 0.85, 0.25, 1);
+}
+
+.dice-cube.no-anim {
+  transition: none;
+}
+
+.dice-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #FFFFFF 0%, #EBF7F3 100%);
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 14rpx rgba(94, 207, 170, 0.12);
+}
+
+.face-front  { transform: rotateY(0deg)   translateZ(60rpx); }
+.face-back   { transform: rotateY(180deg) translateZ(60rpx); }
+.face-top    { transform: rotateX(90deg)  translateZ(60rpx); }
+.face-bottom { transform: rotateX(-90deg) translateZ(60rpx); }
+.face-right  { transform: rotateY(90deg)  translateZ(60rpx); }
+.face-left   { transform: rotateY(-90deg) translateZ(60rpx); }
+
+/* 圆点布局 */
+.pip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 82%;
+  height: 82%;
+  gap: 4rpx;
+}
+
+.pip-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pip {
+  width: 72%;
+  height: 72%;
+  background: radial-gradient(circle at 30% 30%, #5ECFAA, #2A7D5F);
+  border-radius: 50%;
+  box-shadow: inset 0 -2rpx 3rpx rgba(0,0,0,0.35), 0 1rpx 2rpx rgba(255,255,255,0.4);
+}
+
+/* 总点数 */
+.sum-display {
+  height: 150rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 16rpx 0;
+}
+
+.sum-label {
+  font-size: 26rpx;
+  color: #7A9E8E;
+  display: block;
+}
+
+.sum-value {
+  font-size: 72rpx;
+  font-weight: bold;
+  color: #F4A261;
+}
+
+/* 按钮 */
+.shake-btn {
+  width: 400rpx;
+  margin: 16rpx 0;
+}
+
+/* 历史记录 */
+.history {
+  width: 100%;
+  margin-top: 16rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #7A9E8E;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  margin-bottom: 8rpx;
+  box-shadow: 0 2rpx 12rpx rgba(94, 207, 170, 0.08);
+}
+
+.history-values {
+  display: flex;
+  gap: 10rpx;
+  flex-wrap: wrap;
+}
+
+.history-die {
+  color: #FFFFFF;
+  background: #5ECFAA;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 8rpx;
+  text-align: center;
+  line-height: 48rpx;
+  font-weight: bold;
+  font-size: 28rpx;
+}
+
+.history-sum {
+  color: #F4A261;
+  font-weight: bold;
+  font-size: 32rpx;
+}

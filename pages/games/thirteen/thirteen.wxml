@@ -1,0 +1,98 @@
+<view class="container">
+  <!-- 准备阶段 -->
+  <view class="ready-phase" wx:if="{{phase === 'ready'}}">
+    <text class="title">🃏 金陵十三钗</text>
+    <text class="subtitle">谁是卧底 · 推理投票</text>
+
+    <view class="player-count">
+      <text class="count-btn" bindtap="changePlayerCount" data-delta="{{-1}}">-</text>
+      <text class="count-num">{{playerCount}}人</text>
+      <text class="count-btn" bindtap="changePlayerCount" data-delta="{{1}}">+</text>
+    </view>
+
+    <view class="rules card">
+      <text class="rule-item">1. 每人拿到一个词，其中一人是"卧底"拿到不同但相似的词</text>
+      <text class="rule-item">2. 轮流用一句话描述自己的词（不能直接说出）</text>
+      <text class="rule-item">3. 每轮投票选出最可疑的人，票多者淘汰</text>
+      <text class="rule-item">4. 找出卧底则平民胜，卧底存活则卧底胜</text>
+    </view>
+
+    <button class="btn-primary" bindtap="startGame">发牌</button>
+  </view>
+
+  <!-- 看词阶段 -->
+  <view class="peek-phase" wx:if="{{phase === 'peek'}}">
+    <text class="hint">你的词是（仅自己可见）</text>
+    <view class="word-card {{isSpy ? 'spy' : 'civilian'}}">
+      <text class="word-text">{{myWord}}</text>
+      <text class="word-role">{{isSpy ? '🤫 你是卧底' : '👥 你是平民'}}</text>
+    </view>
+    <text class="peek-hint">记住后点击确认</text>
+    <button class="btn-primary" bindtap="confirmPeek">我记住了</button>
+  </view>
+
+  <!-- 描述阶段 -->
+  <view class="describe-phase" wx:if="{{phase === 'describe'}}">
+    <text class="round-info">第 {{round}} 轮</text>
+
+    <view class="speaker-card">
+      <text class="speaker-name">{{players[currentPlayerIndex].name}}</text>
+      <text class="speaker-hint">{{currentPlayerIndex === 0 ? '轮到你描述了' : '正在发言...'}}</text>
+    </view>
+
+    <view class="player-status">
+      <view
+        class="player-dot {{p.isEliminated ? 'eliminated' : ''}}"
+        wx:for="{{players}}"
+        wx:for-item="p"
+        wx:key="id"
+      >
+        {{p.name}}
+      </view>
+    </view>
+
+    <button class="btn-primary" bindtap="nextSpeaker">下一位发言 👉</button>
+  </view>
+
+  <!-- 投票阶段 -->
+  <view class="vote-phase" wx:if="{{phase === 'vote'}}">
+    <text class="title">🗳️ 投票淘汰</text>
+    <text class="hint">选择你认为最可疑的人</text>
+
+    <view class="vote-list">
+      <view
+        class="vote-item {{myVote === item.id ? 'selected' : ''}} {{item.isEliminated ? 'eliminated' : ''}}"
+        wx:for="{{players}}"
+        wx:key="id"
+        bindtap="vote"
+        data-id="{{item.id}}"
+      >
+        <text class="vote-name">{{item.name}}</text>
+        <text class="vote-check" wx:if="{{myVote === item.id}}">✓</text>
+      </view>
+    </view>
+
+    <button class="btn-primary" bindtap="confirmVote">确认投票</button>
+  </view>
+
+  <!-- 揭示阶段 -->
+  <view class="reveal-phase" wx:if="{{phase === 'reveal'}}">
+    <text class="title">结果揭晓</text>
+
+    <view class="eliminated-card">
+      <text class="eliminated-name">{{players[eliminatedPlayer].name}} 被淘汰</text>
+      <text class="eliminated-role {{players[eliminatedPlayer].isSpy ? 'spy' : 'civilian'}}">
+        {{players[eliminatedPlayer].isSpy ? '🤫 卧底' : '👥 平民'}}
+      </text>
+      <text class="eliminated-word">词语：{{players[eliminatedPlayer].word}}</text>
+    </view>
+
+    <view class="word-reveal">
+      <text class="reveal-row">平民词：{{wordPair.civilian}}</text>
+      <text class="reveal-row spy">卧底词：{{wordPair.spy}}</text>
+    </view>
+
+    <button class="btn-primary" bindtap="nextRound">下一轮</button>
+    <button class="btn-secondary" bindtap="restart" style="margin-top: 16rpx;">重新开始</button>
+  </view>
+</view>

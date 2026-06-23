@@ -1,0 +1,96 @@
+/* 全局样式 - 治愈系薄荷绿主题 */
+page {
+  background-color: #F9F7F5;
+  color: #2E3A3A;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+/* 主题色变量 */
+.theme-primary {
+  color: #5ECFAA;
+}
+
+.theme-bg {
+  background-color: #5ECFAA;
+}
+
+/* 卡片通用样式 */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin: 20rpx 0;
+  box-shadow: 0 8rpx 32rpx rgba(94, 207, 170, 0.12);
+}
+
+/* 按钮通用样式 */
+.btn-primary {
+  background: #5ECFAA;
+  color: #ffffff;
+  border-radius: 50rpx;
+  /* padding: 24rpx 48rpx; */
+  font-size: 32rpx;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(94, 207, 170, 0.3);
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+.btn-secondary {
+  background: #E6F0EC;
+  color: #2E3A3A;
+  border-radius: 50rpx;
+  padding: 22rpx 46rpx;
+  font-size: 32rpx;
+  text-align: center;
+  border: none;
+}
+
+.btn-secondary:active {
+  background: #D0E4DC;
+}
+
+.btn-secondary::after {
+  border: none;
+}
+
+/* 文字省略 */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Flex 布局 */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-1 {
+  flex: 1;
+}

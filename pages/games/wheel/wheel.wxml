@@ -1,0 +1,73 @@
+<view class="container">
+  <text class="title">{{gameName}}</text>
+
+  <!-- 加载中 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:else>
+    <!-- 转盘 -->
+    <view class="wheel-container">
+      <view class="wheel-pointer"></view>
+      <view
+        class="wheel"
+        style="transform: rotate({{rotation}}deg); transition: transform {{isSpinning ? '4s' : '0s'}} cubic-bezier(0.17, 0.67, 0.12, 0.99);"
+      >
+        <view
+          class="wheel-segment"
+          wx:for="{{segments}}"
+          wx:key="index"
+          style="clip-path: {{item.clipPath}}; -webkit-clip-path: {{item.clipPath}}; background: {{item.color}};"
+        >
+          <text class="segment-text" style="{{item.textStyle}}">{{item.text}}</text>
+        </view>
+      </view>
+      <view class="wheel-center" bindtap="spin">
+        <text class="spin-text">{{isSpinning ? '...' : 'GO'}}</text>
+      </view>
+    </view>
+
+    <!-- 结果 -->
+    <view class="result-panel" wx:if="{{showResult && result}}">
+      <text class="result-title">🎉 恭喜获得</text>
+      <text class="result-text">{{result.text}}</text>
+      <button class="btn-primary" bindtap="spinAgain">再转一次</button>
+    </view>
+
+    <!-- 编辑按钮 -->
+    <view class="edit-toggle" bindtap="showEditPanel">
+      <text>✏️ 自定义惩罚</text>
+    </view>
+  </block>
+
+  <!-- 遮罩层 -->
+  <view class="drawer-mask {{showEditor ? 'mask-show' : ''}}" bindtap="showEditPanel" catchtouchmove="noop"></view>
+
+  <!-- 底部抽屉 -->
+  <view class="edit-drawer {{showEditor ? 'drawer-show' : ''}}" catchtouchmove="noop">
+    <view class="drawer-handle"></view>
+    <view class="drawer-header">
+      <text class="drawer-title">自定义惩罚</text>
+      <text class="drawer-close" bindtap="showEditPanel">✕</text>
+    </view>
+    <view class="add-row">
+      <input
+        class="edit-input"
+        placeholder="输入惩罚内容"
+        value="{{newItemText}}"
+        bindinput="onNewItemInput"
+        bindconfirm="addItem"
+      />
+      <button class="btn-primary add-btn" bindtap="addItem">添加</button>
+    </view>
+    <scroll-view scroll-y class="item-scroll">
+      <view class="item-list">
+        <view class="edit-item" wx:for="{{items}}" wx:key="index">
+          <text class="edit-item-text">{{item.fullText}}</text>
+          <text class="remove-btn" bindtap="removeItem" data-index="{{index}}">✕</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

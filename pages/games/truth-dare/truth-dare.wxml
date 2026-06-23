@@ -1,0 +1,36 @@
+<view class="container">
+  <!-- 抽卡阶段 -->
+  <!-- <view class="draw-phase" wx:if="{{phase === 'draw'}}">
+    <text class="hint-text">点击翻牌</text>
+    <view class="card-back" bindtap="drawCard">
+      <text class="card-back-text">?</text>
+    </view>
+  </view> -->
+
+  <!-- 选择阶段 -->
+  <view class="choose-title" wx:if="{{phase === 'choose'}}">
+    <text class="hint-text" >真心话还是大冒险？</text>
+  </view>
+  <view class="choose-phase" wx:if="{{phase === 'choose'}}">
+    
+    <view class="choose-cards">
+      <view class="choose-card truth" bindtap="chooseTruth">
+        <text class="choose-label">真心话</text>
+        <text class="choose-icon">🤫</text>
+      </view>
+      <view class="choose-card dare" bindtap="chooseDare">
+        <text class="choose-label">大冒险</text>
+        <text class="choose-icon">🔥</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 揭示阶段 -->
+  <view class="reveal-phase" wx:if="{{phase === 'reveal'}}">
+    <view class="result-card {{currentCard.type}}">
+      <text class="result-type">{{currentCard.type === 'truth' ? '🤫 真心话' : '🔥 大冒险'}}</text>
+      <text class="result-content">{{currentCard.content}}</text>
+    </view>
+    <button class="btn-primary next-btn" bindtap="nextRound">下一轮</button>
+  </view>
+</view>

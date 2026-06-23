@@ -1,0 +1,62 @@
+<view class="container">
+  <!-- 抽牌阶段 -->
+  <view class="draw-phase" wx:if="{{phase === 'draw'}}">
+    <text class="title">👑 国王游戏</text>
+
+    <!-- 玩家数量 -->
+    <view class="player-count">
+      <text class="count-btn" bindtap="changePlayerCount" data-delta="{{-1}}">-</text>
+      <text class="count-num">{{playerCount}}人</text>
+      <text class="count-btn" bindtap="changePlayerCount" data-delta="{{1}}">+</text>
+    </view>
+
+    <view class="card-backs">
+      <view class="card-back king-card" wx:for="{{playerCount}}" wx:key="index">
+        <text class="card-q">?</text>
+      </view>
+    </view>
+
+    <button class="btn-primary" bindtap="startDraw">翻牌</button>
+  </view>
+
+  <!-- 揭牌阶段 -->
+  <view class="reveal-phase" wx:if="{{phase === 'reveal'}}">
+    <text class="title">你的号码牌</text>
+    <view class="my-card {{isKing ? 'is-king' : ''}}">
+      <text class="card-number">{{isKing ? '👑' : myCard.number}}</text>
+      <text class="card-role">{{isKing ? '你是国王！' : '号码 ' + myCard.number}}</text>
+    </view>
+
+    <button class="btn-primary" bindtap="revealAll" wx:if="{{isKing}}">
+      开始发号施令
+    </button>
+    <view class="waiting-text" wx:else>
+      <text>等待国王发令...</text>
+    </view>
+  </view>
+
+  <!-- 发令阶段 -->
+  <view class="command-phase" wx:if="{{phase === 'command'}}">
+    <text class="title">👑 国王的命令</text>
+
+    <view class="command-form" wx:if="{{isKing}}">
+      <input
+        class="command-input"
+        placeholder="指派号码（如：3号）"
+        value="{{targetNumber}}"
+        bindinput="onTargetInput"
+      />
+      <input
+        class="command-input"
+        placeholder="下达命令（如：和左边的人喝交杯酒）"
+        value="{{kingCommand}}"
+        bindinput="onCommandInput"
+      />
+      <button class="btn-primary" bindtap="submitCommand">下达命令</button>
+    </view>
+
+    <view class="command-display" wx:else>
+      <text class="command-text">{{kingCommand || '等待国王...'}}</text>
+    </view>
+  </view>
+</view>

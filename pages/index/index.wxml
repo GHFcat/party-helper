@@ -1,0 +1,70 @@
+<view class="container">
+  <!-- 顶部用户信息 -->
+  <view class="header">
+    <view class="user-info" bindtap="goProfile">
+      <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
+      <view class="user-text">
+        <text class="nickname">{{userInfo.nickName || '点击登录'}}</text>
+        <text class="greeting">今晚，玩点什么？</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类导航 -->
+  <scroll-view class="category-bar" scroll-x wx:if="{{!loading && categories.length > 0}}">
+    <view class="category-item {{activeCategoryId === '0'? 'active' : ''}}" bindtap="selectCategory" data-id="0">全部</view>
+    <view
+      class="category-item {{activeCategoryId === item.id ? 'active' : ''}}"
+      wx:for="{{categories}}"
+      wx:key="id"
+      bindtap="selectCategory"
+      data-id="{{item.id}}"
+    >{{item.name}}</view>
+  </scroll-view>
+
+  <!-- 游戏列表（2列网格） -->
+  <view class="game-grid" wx:if="{{!loading && displayGames.length > 0}}">
+    <view
+      class="game-card {{item.isHot ? 'game-card-hot' : ''}}"
+      wx:for="{{displayGames}}"
+      wx:key="id"
+      bindtap="selectGame"
+      data-game="{{item}}"
+    >
+      <view class="game-cover-wrap">
+        <image wx:if="{{item.icon}}" class="game-cover" src="{{item.icon}}" mode="aspectFill" />
+        <view wx:else class="game-icon-text">{{item.name[0]}}</view>
+        <view class="hot-badge" wx:if="{{item.isHot}}">HOT</view>
+      </view>
+      <view class="game-info">
+        <text class="game-name">{{item.name}}</text>
+        <text class="game-desc" wx:if="{{item.desc}}">{{item.desc}}</text>
+        <view class="game-meta">
+          <text class="game-players">{{item.minPlayers}}{{item.maxPlayers ? '-' + item.maxPlayers : '+'}}人</text>
+          <text class="game-duration" wx:if="{{item.duration}}">{{item.duration}}分钟</text>
+        </view>
+        <view class="game-tags" wx:if="{{item.tags.length > 0}}">
+          <text class="game-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="id"
+            style="background:{{tag.color || '#409EFF'}}">{{tag.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-box" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-box" wx:if="{{!loading && displayGames.length === 0}}">
+    <text class="empty-text">该分类下暂无游戏</text>
+  </view>
+
+  <!-- 快速开始 -->
+  <!-- <view class="quick-start">
+    <button class="btn-primary quick-btn" bindtap="quickStart">
+      🎲 随机来一个
+    </button>
+  </view> -->
+</view>

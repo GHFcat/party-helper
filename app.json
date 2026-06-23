@@ -1,0 +1,49 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/room/room",
+    "pages/games/truth-dare/truth-dare",
+    "pages/games/dice/dice",
+    "pages/games/wheel/wheel",
+    "pages/games/king/king",
+    "pages/games/bomb/bomb",
+    "pages/games/thirteen/thirteen",
+    "pages/profile/profile",
+    "pages/history/history",
+    "pages/user-info/user-info"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#5ECFAA",
+    "navigationBarTitleText": "聚会神器",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F9F7F5",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#7A9E8E",
+    "selectedColor": "#5ECFAA",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "游戏",
+        "iconPath": "assets/images/tab-game.png",
+        "selectedIconPath": "assets/images/tab-game-active.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "记录",
+        "iconPath": "assets/images/tab-history.png",
+        "selectedIconPath": "assets/images/tab-history-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/images/tab-profile.png",
+        "selectedIconPath": "assets/images/tab-profile-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

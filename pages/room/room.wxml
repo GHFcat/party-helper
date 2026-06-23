@@ -1,0 +1,64 @@
+<view class="container">
+  <!-- 加入房间（无房间号时显示） -->
+  <view class="join-section" wx:if="{{!roomCode}}">
+    <view class="card">
+      <text class="title">加入房间</text>
+      <input
+        class="code-input"
+        placeholder="请输入6位房间号"
+        maxlength="6"
+        value="{{inputCode}}"
+        bindinput="onCodeInput"
+      />
+      <button class="btn-primary" bindtap="joinByCode">加入</button>
+    </view>
+  </view>
+
+  <!-- 房间详情（有房间号时显示） -->
+  <view class="room-section" wx:if="{{roomCode}}">
+    <!-- 房间号 -->
+    <view class="room-code-section">
+      <text class="room-label">房间号</text>
+      <view class="room-code" bindtap="copyRoomCode">
+        <text class="code-text">{{roomCode}}</text>
+        <text class="copy-tip">点击复制</text>
+      </view>
+      <button class="btn-secondary share-btn" open-type="share">
+        邀请好友
+      </button>
+    </view>
+
+    <!-- 玩家列表 -->
+    <view class="players-section">
+      <text class="section-title">玩家 ({{players.length}}/{{maxPlayers}})</text>
+      <view class="player-list">
+        <view class="player-item" wx:for="{{players}}" wx:key="userId">
+          <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
+          <text class="player-name">{{item.nickName}}</text>
+          <text class="player-status {{item.isReady ? 'ready' : ''}}">
+            {{item.isHost ? '房主' : item.isReady ? '已准备' : '未准备'}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-section">
+      <button
+        class="btn-primary start-btn"
+        wx:if="{{isHost}}"
+        bindtap="startGame"
+        disabled="{{players.length < 2}}"
+      >
+        开始游戏
+      </button>
+      <button
+        class="btn-primary"
+        wx:else
+        bindtap="toggleReady"
+      >
+        {{players[0].isReady ? '取消准备' : '准备'}}
+      </button>
+    </view>
+  </view>
+</view>

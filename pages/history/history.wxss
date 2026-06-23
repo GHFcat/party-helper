@@ -1,0 +1,78 @@
+.container {
+  padding: 30rpx;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 24rpx;
+  color: #2E3A3A;
+}
+
+.record-item {
+  margin-bottom: 16rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(94, 207, 170, 0.08);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.game-type {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #5ECFAA;
+}
+
+.record-time {
+  font-size: 24rpx;
+  color: #A8BDB4;
+}
+
+.record-body {
+  display: flex;
+  gap: 32rpx;
+  margin-bottom: 8rpx;
+}
+
+.record-info {
+  font-size: 26rpx;
+  color: #7A9E8E;
+}
+
+.result-text {
+  font-size: 26rpx;
+  color: #2E3A3A;
+}
+
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #7A9E8E;
+  display: block;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #A8BDB4;
+  display: block;
+  margin-top: 12rpx;
+}
+
+.load-more {
+  text-align: center;
+  padding: 24rpx;
+  color: #5ECFAA;
+  font-size: 28rpx;
+}

@@ -1,0 +1,52 @@
+<view class="container">
+  <!-- 设置阶段 -->
+  <view class="setup-phase" wx:if="{{phase === 'setup'}}">
+    <text class="title">💣 炸弹倒计时</text>
+
+    <view class="time-setting">
+      <text class="setting-label">倒计时上限</text>
+      <view class="time-control">
+        <text class="time-btn" bindtap="changeMaxTime" data-delta="{{-10}}">-10s</text>
+        <text class="time-value">{{maxTime}}s</text>
+        <text class="time-btn" bindtap="changeMaxTime" data-delta="{{10}}">+10s</text>
+      </view>
+      <text class="setting-hint">随机 {{minTime}}~{{maxTime}} 秒爆炸</text>
+    </view>
+
+    <button class="btn-primary start-btn" bindtap="startBomb">
+      💣 开始
+    </button>
+  </view>
+
+  <!-- 倒计时阶段 -->
+  <view class="ticking-phase" wx:if="{{phase === 'ticking'}}">
+    <view class="bomb-display {{timer <= 5 ? 'urgent' : ''}}">
+      <text class="bomb-icon">💣</text>
+      <text class="countdown">{{timer}}</text>
+    </view>
+
+    <text class="holder-text">炸弹在 {{holder}} 手里！</text>
+
+    <!-- 进度条 -->
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{(timer / totalTime) * 100}}%;"></view>
+    </view>
+
+    <button class="btn-primary pass-btn" bindtap="passBomb">
+      传递给下一个人 👉
+    </button>
+  </view>
+
+  <!-- 爆炸阶段 -->
+  <view class="exploded-phase" wx:if="{{phase === 'exploded'}}">
+    <view class="explosion-effect">
+      <text class="explosion-icon">💥</text>
+      <text class="explosion-text">BOOM!</text>
+    </view>
+
+    <text class="loser-text">{{holder}} 中招了！</text>
+    <text class="punishment">罚酒一杯 🍺</text>
+
+    <button class="btn-primary" bindtap="nextRound">下一轮</button>
+  </view>
+</view>
