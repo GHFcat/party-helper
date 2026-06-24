@@ -1,4 +1,5 @@
 <view class="container">
+  <rules-modal game-id="{{gameId}}"></rules-modal>
   <!-- 抽卡阶段 -->
   <!-- <view class="draw-phase" wx:if="{{phase === 'draw'}}">
     <text class="hint-text">点击翻牌</text>

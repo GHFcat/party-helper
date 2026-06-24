@@ -1,0 +1,17 @@
+<view class="rules-entry" bindtap="open">
+  <text class="rules-entry-icon">📖</text>
+  <text class="rules-entry-text">{{btnText}}</text>
+</view>
+
+<!-- 规则弹窗 -->
+<view class="rules-mask {{showRules ? 'show' : ''}}" wx:if="{{showRules}}" bindtap="close" catchtouchmove="noop">
+  <view class="rules-modal" catchtap="noop">
+    <view class="rules-header">
+      <text class="rules-title">游戏规则</text>
+      <text class="rules-close" bindtap="close">✕</text>
+    </view>
+    <scroll-view scroll-y class="rules-body">
+      <view class="rule-line" wx:for="{{rules}}" wx:key="index">{{item}}</view>
+    </scroll-view>
+  </view>
+</view>

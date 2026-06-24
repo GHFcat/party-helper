@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "惩罚转盘" }
+{
+  "navigationBarTitleText": "惩罚转盘",
+  "usingComponents": {
+    "rules-modal": "/components/rules-modal/rules-modal"
+  }
+}

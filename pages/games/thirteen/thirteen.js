@@ -3,6 +3,7 @@ const { getConnection } = require('../../../utils/signalr.js')
 
 Page({
   data: {
+    gameId: 0,
     phase: 'ready', // ready | peek | describe | vote | reveal
     players: [],
     playerCount: 4,
@@ -18,6 +19,7 @@ Page({
   },
 
   onLoad(options) {
+    this.setData({ gameId: options.gameId || 0 })
     if (options.roomCode) {
       this.setupSignalR(options.roomCode)
     }

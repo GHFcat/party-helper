@@ -3,6 +3,7 @@ const { getConnection } = require('../../../utils/signalr.js')
 
 Page({
   data: {
+    gameId: 0,
     phase: 'draw', // draw | reveal | command
     playerCount: 4,
     cards: [],
@@ -13,6 +14,7 @@ Page({
   },
 
   onLoad(options) {
+    this.setData({ gameId: options.gameId || 0 })
     if (options.roomCode) {
       this.setupSignalR(options.roomCode)
     }

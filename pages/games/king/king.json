@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "国王游戏" }
+{
+  "navigationBarTitleText": "国王游戏",
+  "usingComponents": {
+    "rules-modal": "/components/rules-modal/rules-modal"
+  }
+}

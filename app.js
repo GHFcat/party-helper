@@ -3,8 +3,8 @@ App({
     userInfo: null,
     token: null,
     baseUrl: 'http://192.168.21.15:5087/api',
-    wsUrl: 'http://192.168.21.15:5087/hubs',
-    appId: '',
+    wsUrl: 'http://192.168.21.15:5087',
+    appId: 'wxb83e12096c08eb2d',
     // 登录完成回调（页面通过 tokenReady 回调注册）
     tokenReadyCallback: null
   },

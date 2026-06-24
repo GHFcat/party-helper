@@ -5,6 +5,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+ box-sizing: border-box;
 }
 
 .title {
@@ -14,12 +15,109 @@
   color: #2E3A3A;
 }
 
+/* ===== 模式选择 ===== */
+.mode-select-phase {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mode-hero {
+  display: flex;
+  flex: 0.2;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 40rpx;
+}
+
+.mode-hero-icon {
+  font-size: 120rpx;
+  line-height: 1;
+  margin-bottom: 24rpx;
+  animation: heroFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12rpx); }
+}
+
+.subtitle {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2E3A3A;
+}
+
+.mode-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.mode-card {
+  flex: 1;
+  min-height: 280rpx;
+  box-sizing: border-box;
+  padding: 40rpx 16rpx;
+  border-radius: 28rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.mode-card-hover {
+  transform: scale(0.96);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 单机：浅绿底 + 绿色字 */
+.mode-card.single {
+  background: #E6F7F1;
+  border: 2rpx solid rgba(94, 207, 170, 0.3);
+}
+.mode-card.single .mode-name { color: #2E7D5F; }
+.mode-card.single .mode-desc { color: #6BAF95; }
+
+/* 多人：浅橙底 + 橙色字 */
+.mode-card.multi {
+  background: #FFF0E0;
+  border: 2rpx solid rgba(244, 162, 97, 0.35);
+}
+.mode-card.multi .mode-name { color: #C2620F; }
+.mode-card.multi .mode-desc { color: #D8915C; }
+
+.mode-icon {
+  font-size: 72rpx;
+  margin-bottom: 16rpx;
+}
+
+.mode-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.mode-desc {
+  font-size: 22rpx;
+  line-height: 1.6;
+}
+
 /* 时间设置 */
 .time-setting {
   background: #FFFFFF;
   border-radius: 24rpx;
   padding: 32rpx;
   width: 100%;
+  box-sizing: border-box;
   text-align: center;
   margin-bottom: 48rpx;
   box-shadow: 0 8rpx 32rpx rgba(94, 207, 170, 0.12);
@@ -108,21 +206,6 @@
   margin: 24rpx 0;
 }
 
-.progress-bar {
-  width: 80%;
-  height: 16rpx;
-  background: #E6F0EC;
-  border-radius: 8rpx;
-  overflow: hidden;
-  margin: 32rpx 0;
-}
-
-.progress-fill {
-  height: 100%;
-  background: #F4A261;
-  border-radius: 8rpx;
-  transition: width 1s linear;
-}
 
 .pass-btn {
   width: 500rpx;
@@ -165,4 +248,129 @@
   font-size: 32rpx;
   color: #7A9E8E;
   margin-bottom: 48rpx;
+}
+
+/* ===== 单机 ticking 提示语 ===== */
+.hint-text {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #F4A261;
+  margin: 24rpx 0 8rpx;
+  animation: hintFade 0.5s ease;
+}
+
+@keyframes hintFade {
+  from { opacity: 0; transform: translateY(8rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 联机 ticking：持有人展示 ===== */
+.ticking-phase.multi {
+  width: 100%;
+  align-items: center;
+}
+
+.holder-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 24rpx 32rpx;
+  margin: 32rpx 0;
+  box-shadow: 0 8rpx 32rpx rgba(244, 162, 97, 0.2);
+}
+
+.holder-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #F3F6F4;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.holder-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.avatar-fallback {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #5ECFAA;
+}
+
+.holder-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.holder-name {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #2E3A3A;
+}
+
+.holder-tag {
+  font-size: 24rpx;
+  color: #F4A261;
+  margin-top: 4rpx;
+}
+
+.waiting-tip {
+  font-size: 28rpx;
+  color: #7A9E8E;
+  margin: 24rpx 0;
+}
+
+/* ===== 联机爆炸页 ===== */
+.loser-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 16rpx 0 24rpx;
+}
+
+.loser-avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  background: #F3F6F4;
+  margin-bottom: 16rpx;
+  border: 4rpx solid rgba(244, 162, 97, 0.4);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loser-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.loser-avatar .avatar-fallback {
+  font-size: 52rpx;
+}
+
+.loser-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2E3A3A;
+}
+
+.multi-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding: 0 32rpx;
+  box-sizing: border-box;
+  margin-top: 16rpx;
 }

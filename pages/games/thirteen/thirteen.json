@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "金陵十三钗" }
+{
+  "navigationBarTitleText": "金陵十三钗",
+  "usingComponents": {
+    "rules-modal": "/components/rules-modal/rules-modal"
+  }
+}

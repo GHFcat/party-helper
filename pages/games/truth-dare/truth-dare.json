@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "真心话大冒险" }
+{
+  "navigationBarTitleText": "真心话大冒险",
+  "usingComponents": {
+    "rules-modal": "/components/rules-modal/rules-modal"
+  }
+}

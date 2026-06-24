@@ -1,5 +1,6 @@
 <view class="container">
-  <text class="title">🎲 骰子游戏</text>
+  <rules-modal game-id="{{gameId}}"></rules-modal>
+  <!-- <text class="title">🎲 骰子游戏</text> -->
 
   <!-- 骰子数量选择 -->
   <view class="count-selector">
@@ -43,11 +44,13 @@
   <!-- 历史记录 -->
   <view class="history" wx:if="{{history.length > 0}}">
     <text class="section-title">历史记录</text>
-    <view class="history-item" wx:for="{{history}}" wx:key="hid">
-      <view class="history-values">
-        <text class="history-die" wx:for="{{item.values}}" wx:for-item="v" wx:key="*this">{{v}}</text>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{history}}" wx:key="hid">
+        <view class="history-values">
+          <text class="history-die" wx:for="{{item.values}}" wx:for-item="v" wx:key="*this">{{v}}</text>
+        </view>
+        <text class="history-sum">= {{item.sum}}</text>
       </view>
-      <text class="history-sum">= {{item.sum}}</text>
     </view>
   </view>
 </view>

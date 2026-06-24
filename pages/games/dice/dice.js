@@ -41,6 +41,7 @@ let _historyId = 0
 
 Page({
   data: {
+    gameId: 0,
     diceCount: 2,
     dice: [],
     diceFaces: DICE_FACES,
@@ -52,7 +53,14 @@ Page({
     history: []
   },
 
-  onLoad() {
+  onLoad(options) {
+    const name = options.name ? decodeURIComponent(options.name) : ''
+    // 自动更新导航栏标题 + 页内标题
+    if (name) {
+      this.setData({ gameName: name })
+      wx.setNavigationBarTitle({ title: name })
+    }
+    this.setData({ gameId: options.gameId || 0 })
     this.initDice()
   },
 

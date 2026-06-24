@@ -47,6 +47,7 @@ Page({
 
   /**
    * 等待登录拿到 token 后再请求（接口需 Bearer Token）
+   * 游戏规则由 <rules-modal> 组件自行拉取
    */
   ensureTokenThenLoad() {
     const app = getApp()

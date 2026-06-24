@@ -1,7 +1,30 @@
 <view class="container">
-  <!-- 设置阶段 -->
-  <view class="setup-phase" wx:if="{{phase === 'setup'}}">
-    <text class="title">💣 炸弹倒计时</text>
+  <rules-modal game-id="{{gameId}}"></rules-modal>
+
+  <!-- 模式选择 -->
+  <view class="mode-select-phase" wx:if="{{phase === 'modeSelect'}}">
+    <view class="mode-hero">
+      <text class="mode-hero-icon">💣</text>
+      <text class="subtitle">选择玩法</text>
+    </view>
+
+    <view class="mode-cards">
+      <view class="mode-card single" bindtap="selectMode" data-mode="single" hover-class="mode-card-hover">
+        <text class="mode-icon">🎯</text>
+        <text class="mode-name">单机模式</text>
+        <text class="mode-desc">独自体验悬念</text>
+      </view>
+      <view class="mode-card multi" bindtap="selectMode" data-mode="multi" hover-class="mode-card-hover">
+        <text class="mode-icon">👥</text>
+        <text class="mode-name">在线多人</text>
+        <text class="mode-desc">邀请好友同乐</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 单机：设置阶段 -->
+  <view class="setup-phase" wx:if="{{phase === 'setup' && mode === 'single'}}">
+    <!-- <text class="title">💣 炸弹倒计时</text> -->
 
     <view class="time-setting">
       <text class="setting-label">倒计时上限</text>
@@ -18,35 +41,77 @@
     </button>
   </view>
 
-  <!-- 倒计时阶段 -->
-  <view class="ticking-phase" wx:if="{{phase === 'ticking'}}">
+  <!-- 单机：倒计时阶段（隐藏数字，只显示脉动炸弹 + 提示语） -->
+  <view class="ticking-phase" wx:if="{{phase === 'ticking' && mode === 'single'}}">
     <view class="bomb-display {{timer <= 5 ? 'urgent' : ''}}">
       <text class="bomb-icon">💣</text>
-      <text class="countdown">{{timer}}</text>
     </view>
-
-    <text class="holder-text">炸弹在 {{holder}} 手里！</text>
-
-    <!-- 进度条 -->
-    <view class="progress-bar">
-      <view class="progress-fill" style="width: {{(timer / totalTime) * 100}}%;"></view>
-    </view>
-
-    <button class="btn-primary pass-btn" bindtap="passBomb">
-      传递给下一个人 👉
-    </button>
+    <text class="hint-text">{{currentHint}}</text>
+    
   </view>
 
-  <!-- 爆炸阶段 -->
-  <view class="exploded-phase" wx:if="{{phase === 'exploded'}}">
+  <!-- 联机：倒计时阶段（服务端权威，无数字无进度条） -->
+  <view class="ticking-phase multi" wx:if="{{phase === 'ticking' && mode === 'multi'}}">
+    <view class="bomb-display urgent">
+      <text class="bomb-icon">💣</text>
+    </view>
+
+    <block wx:if="{{holderInfo}}">
+      <view class="holder-card">
+        <view class="holder-avatar">
+          <image wx:if="{{holderInfo.avatar}}" src="{{holderInfo.avatar}}" mode="aspectFill" class="holder-avatar-img" />
+          <text wx:else class="avatar-fallback">{{holderInfo.userName[0]}}</text>
+        </view>
+        <view class="holder-meta">
+          <text class="holder-name">{{holderInfo.userName}}</text>
+          <text class="holder-tag">{{holderInfo.isSelf ? '炸弹在你手里！' : '炸弹在ta手里'}}</text>
+        </view>
+      </view>
+
+      <button
+        class="btn-primary pass-btn"
+        wx:if="{{holderInfo.isSelf}}"
+        bindtap="passBomb"
+      >传给下一位 👉</button>
+
+      <view class="waiting-tip" wx:else>等待 {{holderInfo.nickName}} 传递…</view>
+    </block>
+
+    <view class="waiting-tip" wx:else>等待开局…</view>
+  </view>
+
+  <!-- 单机：爆炸阶段 -->
+  <view class="exploded-phase" wx:if="{{phase === 'exploded' && mode === 'single'}}">
+    <view class="explosion-effect">
+      <text class="explosion-icon">💥</text>
+      <text class="explosion-text">BOOM!</text>
+    </view>
+    <text class="loser-text">你中招了！</text>
+    <text class="punishment">罚酒一杯 🍺</text>
+
+    <button class="btn-primary" bindtap="nextRound">下一轮</button>
+  </view>
+
+  <!-- 联机：爆炸阶段 -->
+  <view class="exploded-phase" wx:if="{{phase === 'exploded' && mode === 'multi'}}">
     <view class="explosion-effect">
       <text class="explosion-icon">💥</text>
       <text class="explosion-text">BOOM!</text>
     </view>
 
-    <text class="loser-text">{{holder}} 中招了！</text>
+    <view class="loser-card" wx:if="{{loserInfo}}">
+      <view class="loser-avatar">
+        <image wx:if="{{loserInfo.avatar}}" src="{{loserInfo.avatar}}" mode="aspectFill" class="loser-avatar-img" />
+        <text wx:else class="avatar-fallback">{{loserInfo.userName[0]}}</text>
+      </view>
+      <text class="loser-name">{{loserInfo.userName}}</text>
+      <text class="loser-text">{{loserInfo.isSelf ? '你中招了！' : '中招了！'}}</text>
+    </view>
     <text class="punishment">罚酒一杯 🍺</text>
 
-    <button class="btn-primary" bindtap="nextRound">下一轮</button>
+    <view class="multi-actions">
+      <button class="btn-primary" bindtap="backToRoom">回到房间</button>
+      <button class="btn-secondary" bindtap="exitToModeSelect">退出</button>
+    </view>
   </view>
 </view>

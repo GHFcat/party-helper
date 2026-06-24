@@ -46,6 +46,8 @@
 }
 
 .room-code {
+  width: 100%;
+  box-sizing: border-box;
   background: #FFFFFF;
   border-radius: 24rpx;
   padding: 32rpx 48rpx;
@@ -55,9 +57,9 @@
 }
 
 .code-text {
-  font-size: 64rpx;
+  font-size: 40rpx;
   font-weight: bold;
-  letter-spacing: 16rpx;
+  letter-spacing: 12rpx;
   color: #5ECFAA;
   display: block;
 }
@@ -109,21 +111,40 @@
   height: 64rpx;
   border-radius: 50%;
   margin-right: 16rpx;
+  background: #E6F0EC;
+}
+
+.player-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #5ECFAA;
+}
+
+.player-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .player-name {
-  flex: 1;
   font-size: 30rpx;
   color: #2E3A3A;
 }
 
-.player-status {
-  font-size: 24rpx;
+.player-tag {
+  font-size: 22rpx;
   color: #A8BDB4;
+  margin-top: 2rpx;
 }
 
-.player-status.ready {
-  color: #5ECFAA;
+.waiting-tip {
+  text-align: center;
+  font-size: 26rpx;
+  color: #7A9E8E;
+  padding: 24rpx 0;
 }
 
 /* 操作 */
