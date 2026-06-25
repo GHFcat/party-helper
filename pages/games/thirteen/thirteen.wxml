@@ -1,99 +1,84 @@
 <view class="container">
   <rules-modal game-id="{{gameId}}"></rules-modal>
-  <!-- 准备阶段 -->
-  <view class="ready-phase" wx:if="{{phase === 'ready'}}">
-    <text class="title">🃏 金陵十三钗</text>
-    <text class="subtitle">谁是卧底 · 推理投票</text>
 
-    <view class="player-count">
-      <text class="count-btn" bindtap="changePlayerCount" data-delta="{{-1}}">-</text>
-      <text class="count-num">{{playerCount}}人</text>
-      <text class="count-btn" bindtap="changePlayerCount" data-delta="{{1}}">+</text>
-    </view>
-
-    <view class="rules card">
-      <text class="rule-item">1. 每人拿到一个词，其中一人是"卧底"拿到不同但相似的词</text>
-      <text class="rule-item">2. 轮流用一句话描述自己的词（不能直接说出）</text>
-      <text class="rule-item">3. 每轮投票选出最可疑的人，票多者淘汰</text>
-      <text class="rule-item">4. 找出卧底则平民胜，卧底存活则卧底胜</text>
-    </view>
-
-    <button class="btn-primary" bindtap="startGame">发牌</button>
+  <!-- 左上角退出按钮（自定义导航栏） -->
+  <view class="nav-exit" bindtap="exitRoom">
+    <text class="nav-exit-icon">✕</text>
+    <text class="nav-exit-text">退出</text>
   </view>
 
-  <!-- 看词阶段 -->
-  <view class="peek-phase" wx:if="{{phase === 'peek'}}">
-    <text class="hint">你的词是（仅自己可见）</text>
-    <view class="word-card {{isSpy ? 'spy' : 'civilian'}}">
-      <text class="word-text">{{myWord}}</text>
-      <text class="word-role">{{isSpy ? '🤫 你是卧底' : '👥 你是平民'}}</text>
-    </view>
-    <text class="peek-hint">记住后点击确认</text>
-    <button class="btn-primary" bindtap="confirmPeek">我记住了</button>
+  <!-- ===== 连接中 ===== -->
+  <view class="connecting" wx:if="{{phase === 'connecting'}}">
+    <text class="connecting-text">正在创建房间…</text>
   </view>
 
-  <!-- 描述阶段 -->
-  <view class="describe-phase" wx:if="{{phase === 'describe'}}">
-    <text class="round-info">第 {{round}} 轮</text>
-
-    <view class="speaker-card">
-      <text class="speaker-name">{{players[currentPlayerIndex].name}}</text>
-      <text class="speaker-hint">{{currentPlayerIndex === 0 ? '轮到你描述了' : '正在发言...'}}</text>
+  <!-- ===== 牌桌（等待玩家 + 对局进行中） ===== -->
+  <view class="table" wx:if="{{phase === 'table'}}">
+    <!-- 其他玩家（围绕牌桌） -->
+    <view
+      class="seat {{nextUserId === p.userId ? 'is-active' : ''}}"
+      wx:for="{{otherPlayers}}"
+      wx:for-item="p"
+      wx:key="userId"
+      style="{{p.positionStyle}}"
+    >
+      <view class="seat-avatar">{{p.userName[0] || '?'}}</view>
+      <text class="seat-name">{{p.userName}}{{p.isOwner ? ' 👑' : ''}}</text>
+      <view class="seat-fan">
+        <view class="card-back" wx:for="{{p.displayCount}}" wx:for-item="c" wx:key="*this"></view>
+      </view>
+      <text class="seat-count">{{p.cardCount}}张</text>
     </view>
 
-    <view class="player-status">
-      <view
-        class="player-dot {{p.isEliminated ? 'eliminated' : ''}}"
-        wx:for="{{players}}"
-        wx:for-item="p"
-        wx:key="id"
-      >
-        {{p.name}}
+    <!-- 中央：未开始显示「开始游戏」/ 等待文案；已开始显示牌堆 + 发牌按钮 -->
+    <view class="center">
+      <block wx:if="{{gameStarted}}">
+        <view class="deck">
+          <view class="deck-card deck-bottom"></view>
+          <view class="deck-card deck-mid"></view>
+          <view class="deck-card deck-top">
+            <text class="deck-label">🂠</text>
+          </view>
+        </view>
+        <text class="deck-remaining">剩余 {{remaining}} / {{totalCards}}</text>
+        <block wx:if="{{isHost}}">
+          <button class="deal-btn" wx:if="{{remaining > 0}}" bindtap="dealCard">发 牌</button>
+          <button class="deal-btn restart-btn" wx:else bindtap="restartGame">再开一局</button>
+        </block>
+        <text class="deck-hint" wx:else>{{remaining === 0 ? '本局已结束' : '等待房主发牌'}}</text>
+      </block>
+
+      <block wx:else>
+        <button
+          wx:if="{{isHost}}"
+          class="deal-btn start-game-btn"
+          bindtap="startGame"
+          disabled="{{players.length < minPlayers}}">
+          开始游戏
+        </button>
+        <text class="deck-hint" wx:else>等待房主开始游戏…</text>
+      </block>
+    </view>
+
+    <!-- 自己（底部） -->
+    <view class="seat-self" wx:if="{{selfPlayer}}">
+      <view class="self-header">
+        <view class="self-avatar {{selfPlayer.isOwner ? 'is-owner' : ''}}">{{selfPlayer.userName[0] || '?'}}</view>
+        <view class="self-meta">
+          <text class="self-name">{{selfPlayer.userName}}（我）{{selfPlayer.isOwner ? '👑' : ''}}</text>
+          <view class="self-sub">
+            <text class="self-count" bindtap="copyRoomId">手牌 {{selfPlayer.cardCount}} 张 · 房间 {{roomId}}</text>
+            <button class="self-invite-btn" open-type="share">📤</button>
+          </view>
+        </view>
+      </view>
+      <view class="self-hand">
+        <view class="play-card {{c.isRed ? 'is-red' : 'is-black'}}" wx:for="{{selfPlayer.hand}}" wx:for-item="c" wx:key="id">
+          <text class="play-card-rank">{{c.rankLabel}}</text>
+          <text class="play-card-suit">{{c.suitSymbol}}</text>
+        </view>
+        <view class="self-empty" wx:if="{{selfPlayer.cardCount === 0}}">还没有牌</view>
       </view>
     </view>
-
-    <button class="btn-primary" bindtap="nextSpeaker">下一位发言 👉</button>
-  </view>
-
-  <!-- 投票阶段 -->
-  <view class="vote-phase" wx:if="{{phase === 'vote'}}">
-    <text class="title">🗳️ 投票淘汰</text>
-    <text class="hint">选择你认为最可疑的人</text>
-
-    <view class="vote-list">
-      <view
-        class="vote-item {{myVote === item.id ? 'selected' : ''}} {{item.isEliminated ? 'eliminated' : ''}}"
-        wx:for="{{players}}"
-        wx:key="id"
-        bindtap="vote"
-        data-id="{{item.id}}"
-      >
-        <text class="vote-name">{{item.name}}</text>
-        <text class="vote-check" wx:if="{{myVote === item.id}}">✓</text>
-      </view>
-    </view>
-
-    <button class="btn-primary" bindtap="confirmVote">确认投票</button>
-  </view>
-
-  <!-- 揭示阶段 -->
-  <view class="reveal-phase" wx:if="{{phase === 'reveal'}}">
-    <text class="title">结果揭晓</text>
-
-    <view class="eliminated-card">
-      <text class="eliminated-name">{{players[eliminatedPlayer].name}} 被淘汰</text>
-      <text class="eliminated-role {{players[eliminatedPlayer].isSpy ? 'spy' : 'civilian'}}">
-        {{players[eliminatedPlayer].isSpy ? '🤫 卧底' : '👥 平民'}}
-      </text>
-      <text class="eliminated-word">词语：{{players[eliminatedPlayer].word}}</text>
-    </view>
-
-    <view class="word-reveal">
-      <text class="reveal-row">平民词：{{wordPair.civilian}}</text>
-      <text class="reveal-row spy">卧底词：{{wordPair.spy}}</text>
-    </view>
-
-    <button class="btn-primary" bindtap="nextRound">下一轮</button>
-    <button class="btn-secondary" bindtap="restart" style="margin-top: 16rpx;">重新开始</button>
   </view>
 </view>

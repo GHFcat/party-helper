@@ -5,13 +5,15 @@ const DEFAULT_HUB = '/hubs/room'
 
 // 各联机游戏最低开局人数
 const MIN_PLAYERS_BY_GAME = {
-  bomb: 3
+  bomb: 3,
+  thirteen: 2
 }
 const DEFAULT_MIN_PLAYERS = 2
 
 // 各游戏对应的游戏页路径
 const GAME_PATH_BY_TYPE = {
-  bomb: '/pages/games/bomb/bomb'
+  bomb: '/pages/games/bomb/bomb',
+  thirteen: '/pages/games/thirteen/thirteen'
 }
 
 Page({

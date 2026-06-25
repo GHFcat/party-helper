@@ -92,3 +92,55 @@
 .rule-line:last-child {
   margin-bottom: 0;
 }
+
+/* ===== 横屏覆盖（十三钗等横屏游戏） ===== */
+@media screen and (orientation: landscape) {
+  .rules-entry {
+    top: calc(12rpx + env(safe-area-inset-top));
+    right: 16rpx;
+    padding: 5rpx 14rpx;
+    border-radius: 24rpx;
+    gap: 4rpx;
+    box-shadow: 0 2rpx 8rpx rgba(94, 207, 170, 0.2);
+  }
+
+  .rules-entry-icon {
+    font-size: 16rpx;
+  }
+
+  .rules-entry-text {
+    font-size: 14rpx;
+  }
+
+  .rules-modal {
+    width: auto;
+    max-width: 70%;
+    max-height: 86vh;
+    border-radius: 16rpx;
+  }
+
+  .rules-header {
+    padding: 14rpx 22rpx;
+  }
+
+  .rules-title {
+    font-size: 20rpx;
+  }
+
+  .rules-close {
+    font-size: 20rpx;
+    padding: 2rpx 8rpx;
+  }
+
+  .rules-body {
+    padding: 14rpx 22rpx;
+    max-height: 72vh;
+  }
+
+  .rule-line {
+    font-size: 16rpx;
+    line-height: 1.5;
+    margin-bottom: 8rpx;
+    padding-left: 6rpx;
+  }
+}

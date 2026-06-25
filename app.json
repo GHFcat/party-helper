@@ -19,6 +19,7 @@
     "backgroundColor": "#F9F7F5",
     "backgroundTextStyle": "dark"
   },
+  "resizable": true ,
   "tabBar": {
     "color": "#7A9E8E",
     "selectedColor": "#5ECFAA",

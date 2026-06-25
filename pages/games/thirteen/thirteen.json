@@ -1,5 +1,7 @@
 {
   "navigationBarTitleText": "金陵十三钗",
+  "navigationStyle": "custom",
+  "pageOrientation": "landscape",
   "usingComponents": {
     "rules-modal": "/components/rules-modal/rules-modal"
   }
