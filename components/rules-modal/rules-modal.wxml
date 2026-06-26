@@ -1,4 +1,4 @@
-<view class="rules-entry" bindtap="open">
+<view class="rules-entry" style="{{entryStyle}}" bindtap="open">
   <text class="rules-entry-icon">📖</text>
   <text class="rules-entry-text">{{btnText}}</text>
 </view>

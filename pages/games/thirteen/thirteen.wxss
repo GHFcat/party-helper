@@ -34,6 +34,49 @@
   line-height: 1;
 }
 
+/* ===== Mock 调试面板 ===== */
+.mock-panel {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 10rpx;
+  padding: 8rpx 10rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  z-index: 30;
+  max-width: 60%;
+}
+
+.mock-row {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  flex-wrap: wrap;
+}
+
+.mock-label {
+  font-size: 11rpx;
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 2rpx;
+}
+
+.mock-btn {
+  font-size: 12rpx;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4rpx 8rpx;
+  border-radius: 6rpx;
+  line-height: 1.3;
+}
+
+.mock-btn.is-active {
+  background: #F4A261;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
 /* ===== 连接中 ===== */
 .connecting {
   position: absolute;
@@ -58,19 +101,27 @@
 /* 其他玩家座位 */
 .seat {
   position: absolute;
-  width: 90rpx;
+  width: 76rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* 房主皇冠（贴在头像正上方） */
+.seat-crown {
+  font-size: 16rpx;
+  line-height: 1;
+  margin-bottom: -2rpx;
+  filter: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.5));
+}
+
 .seat-avatar {
-  width: 52rpx;
-  height: 52rpx;
+  width: 40rpx;
+  height: 40rpx;
   border-radius: 50%;
   background: #FFFFFF;
   color: #5ECFAA;
-  font-size: 20rpx;
+  font-size: 15rpx;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -91,11 +142,11 @@
 }
 
 .seat-name {
-  font-size: 13rpx;
+  font-size: 12rpx;
   color: #FFFFFF;
-  margin-top: 3rpx;
+  margin-top: 2rpx;
   text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.5);
-  max-width: 90rpx;
+  max-width: 76rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -103,27 +154,50 @@
 
 .seat-fan {
   display: flex;
-  margin-top: 2rpx;
-  height: 24rpx;
+  margin-top: 3rpx;
+  height: 30rpx;
+  align-items: center;
 }
 
-.card-back {
-  width: 17rpx;
-  height: 24rpx;
+.mini-card {
+  width: 22rpx;
+  height: 30rpx;
   border-radius: 3rpx;
-  background: linear-gradient(135deg, #C0392B, #922B21);
-  border: 1rpx solid rgba(255, 255, 255, 0.7);
-  margin-left: -8rpx;
-  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
+  background: #FFFFFF;
+  margin-left: -12rpx;
+  border: 1rpx solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+  position: relative;
 }
 
-.card-back:first-child {
+.mini-card:first-child {
   margin-left: 0;
 }
 
-.seat-count {
-  font-size: 11rpx;
-  color: rgba(255, 255, 255, 0.75);
+.mini-card.is-red { color: #E74C3C; }
+.mini-card.is-black { color: #2C3E50; }
+
+.mini-card-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.mini-card-tl { top: 2rpx; left: 2rpx; }
+.mini-card-br { bottom: 2rpx; right: 2rpx; transform: rotate(180deg); }
+
+.mini-card-rank {
+  font-size: 9rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.mini-card-suit {
+  font-size: 7rpx;
+  line-height: 1;
   margin-top: 1rpx;
 }
 
@@ -140,14 +214,14 @@
 
 .deck {
   position: relative;
-  width: 54rpx;
-  height: 76rpx;
+  width: 44rpx;
+  height: 60rpx;
 }
 
 .deck-card {
   position: absolute;
-  width: 54rpx;
-  height: 76rpx;
+  width: 44rpx;
+  height: 60rpx;
   border-radius: 6rpx;
   background: linear-gradient(135deg, #C0392B, #922B21);
   border: 2rpx solid #FFFFFF;
@@ -176,12 +250,12 @@
 }
 
 .deal-btn {
-  margin-top: 10rpx;
+  margin-top: 4rpx;
   background: #F4A261 !important;
   color: #FFFFFF !important;
   font-size: 17rpx;
   font-weight: bold;
-  padding: 7rpx 36rpx;
+  padding: 6rpx 32rpx;
   border-radius: 24rpx;
   line-height: 1.6;
 }
@@ -233,9 +307,15 @@
   margin-bottom: 4rpx;
 }
 
+.self-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .self-avatar {
-  width: 40rpx;
-  height: 40rpx;
+  width: 36rpx;
+  height: 36rpx;
   border-radius: 50%;
   background: #FFFFFF;
   color: #5ECFAA;
@@ -254,6 +334,7 @@
 .self-meta {
   display: flex;
   flex-direction: column;
+  margin-bottom: -12rpx;
 }
 
 .self-name {
@@ -262,66 +343,85 @@
   text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.4);
 }
 
-.self-sub {
-  display: flex;
-  align-items: center;
-  gap: 6rpx;
+/* ===== 左下角：房间号 ===== */
+.room-id-box {
+  position: absolute;
+  left: 16rpx;
+  bottom: 16rpx;
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12rpx;
+  line-height: 1.2;
+  border-radius: 8rpx;
+  padding: 6rpx 10rpx;
+  z-index: 10;
 }
 
-.self-count {
-  font-size: 11rpx;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.self-invite-btn {
-  background: rgba(244, 162, 97, 0.85) !important;
+/* ===== 右下角：邀请好友 ===== */
+.invite-btn {
+  position: absolute;
+  right: 16rpx;
+  bottom: 16rpx;
+  background: #F4A261 !important;
   color: #FFFFFF !important;
   font-size: 13rpx;
   font-weight: bold;
-  line-height: 1;
-  padding: 4rpx 10rpx;
-  border-radius: 16rpx;
+  line-height: 1.4;
+  padding: 7rpx 18rpx;
+  border-radius: 20rpx;
   margin: 0;
-  min-width: 0;
+  z-index: 10;
 }
 
-.self-invite-btn::after {
+.invite-btn::after {
   border: none;
 }
 
 .self-hand {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 4rpx;
+  flex-wrap: nowrap;
   max-width: 100%;
 }
 
-/* 扑克牌（自己手牌正面） */
+/* 扑克牌（自己手牌正面）—— 堆叠摆放 */
 .play-card {
   width: 40rpx;
   height: 56rpx;
+  margin-left: -24rpx;
   border-radius: 4rpx;
   background: #FFFFFF;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.35);
   box-sizing: border-box;
+  position: relative;
+}
+
+.play-card:first-child {
+  margin-left: 0;
 }
 
 .play-card.is-red { color: #E74C3C; }
 .play-card.is-black { color: #2C3E50; }
 
-.play-card-rank {
-  font-size: 15rpx;
+.card-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.card-tl { top: 3rpx; left: 3rpx; }
+.card-br { bottom: 3rpx; right: 3rpx; transform: rotate(180deg); }
+
+.card-rank {
+  font-size: 12rpx;
   font-weight: bold;
   line-height: 1;
 }
 
-.play-card-suit {
-  font-size: 13rpx;
+.card-suit {
+  font-size: 10rpx;
   line-height: 1;
   margin-top: 1rpx;
 }

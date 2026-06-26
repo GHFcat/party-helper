@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 6rpx;
-  padding: 10rpx 20rpx;
+  padding: 5rpx 10rpx;
   background: rgba(255, 255, 255, 0.92);
   border-radius: 32rpx;
   box-shadow: 0 4rpx 16rpx rgba(94, 207, 170, 0.2);
@@ -98,18 +98,18 @@
   .rules-entry {
     top: calc(12rpx + env(safe-area-inset-top));
     right: 16rpx;
-    padding: 5rpx 14rpx;
+    padding: 5rpx 10rpx;
     border-radius: 24rpx;
     gap: 4rpx;
     box-shadow: 0 2rpx 8rpx rgba(94, 207, 170, 0.2);
   }
 
   .rules-entry-icon {
-    font-size: 16rpx;
+    font-size: 12rpx;
   }
 
   .rules-entry-text {
-    font-size: 14rpx;
+    font-size: 10rpx;
   }
 
   .rules-modal {

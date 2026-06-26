@@ -1,25 +1,18 @@
 const { getConnection } = require('../../../utils/signalr.js')
 
 const SUIT_SYMBOLS = { spade: '♠', heart: '♥', diamond: '♦', club: '♣' }
-const TOTAL_CARDS = 54
+const TOTAL_CARDS = 52
 const DEFAULT_HUB = '/hubs/room'
 const MIN_PLAYERS = 1
 
 /**
- * 座位位置（按从自己开始的顺时针顺序，最多 8 人）
- * index 0 = 自己（单独用 .seat-self 样式，这里留空）
+ * 椭圆牌桌半径（百分比，相对屏幕宽 / 高）
+ * 用于按人数等分布点
  */
-const POSITION_SLOTS = [
-  '',
-  'top:50%;left:16rpx;transform:translateY(-50%);',
-  'top:16rpx;left:96rpx;',
-  'top:6rpx;left:50%;transform:translateX(-50%);',
-  'top:16rpx;right:96rpx;',
-  'top:50%;right:16rpx;transform:translateY(-50%);',
-  'bottom:140rpx;right:16rpx;',
-  'bottom:140rpx;left:16rpx;'
-]
-const LAST_SLOT = POSITION_SLOTS[POSITION_SLOTS.length - 1]
+const TABLE_RX = 44   // 水平半径
+const TABLE_RY = 34   // 垂直半径
+const TABLE_CX = 50   // 中心 X
+const TABLE_CY = 50   // 中心 Y
 
 Page({
   data: {
@@ -40,7 +33,10 @@ Page({
     selfPlayer: null,
     remaining: TOTAL_CARDS,
     totalCards: TOTAL_CARDS,
-    nextUserId: null
+    nextUserId: null,
+    // Mock 模式（仅供单机调试布局用，不入 SignalR 流程）
+    mockMode: false,
+    mockCount: 4
   },
 
   onLoad(options) {
@@ -53,6 +49,22 @@ Page({
     const app = getApp()
     patch.selfUserId = (app.globalData.userInfo && app.globalData.userInfo.id) || null
     this.setData(patch)
+
+    // Mock 模式：跳过 SignalR，本地伪造玩家用于调试布局
+    if (options.mock === '1') {
+      const count = Math.min(8, Math.max(2, Number(options.players) || 4))
+      this.setData({
+        mockMode: true,
+        roomId: 888888,
+        ownerUserId: patch.selfUserId || 1,
+        isHost: true,
+        phase: 'table',
+        gameStarted: options.started === '1',
+        mockCount: count
+      })
+      this._loadMockPlayers(count)
+      return
+    }
 
     this._setupHubListeners()
 
@@ -221,50 +233,153 @@ Page({
 
   /**
    * 从 RoomHub 拉取房间玩家，排座位
-   * - 按 userId 升序得到全员一致的「发牌顺序」
-   * - 以自己为起点 (seatIndex 0) 计算每个玩家在桌面上的座位
-   * - 重新拉取时按 userId 合并已发的手牌，避免中途加入者清空已有牌
    */
   _loadTablePlayers() {
     const conn = this.data.connection
     if (!conn) return
     conn.invoke('GetRoomUsers').then(res => {
       if (!res || res.code !== 0) return
-      const users = (res.data || []).slice().sort((a, b) => a.userId - b.userId)
-      const N = users.length
-      const selfId = this.data.selfUserId
-      let selfCanonicalIdx = users.findIndex(u => u.userId == selfId)
-      if (selfCanonicalIdx < 0) selfCanonicalIdx = 0
-
-      const prevMap = {}
-      this.data.players.forEach(p => { prevMap[p.userId] = p })
-
-      const players = users.map((u, i) => {
-        const seatIndex = (i - selfCanonicalIdx + N) % N
-        const prev = prevMap[u.userId]
-        const hand = (prev && prev.hand) || []
-        return {
-          userId: u.userId,
-          userName: u.userName || '匿名',
-          isOwner: !!u.isOwner,
-          isSelf: u.userId == selfId,
-          seatIndex,
-          positionStyle: seatIndex === 0 ? '' : (POSITION_SLOTS[seatIndex] || LAST_SLOT),
-          hand,
-          cardCount: hand.length,
-          displayCount: Math.min(hand.length, 5)
-        }
-      })
-
-      const selfPlayer = players.find(p => p.isSelf) || null
-      this.setData({
-        players,
-        otherPlayers: players.filter(p => !p.isSelf),
-        selfPlayer,
-        isHost: !!(selfPlayer && selfPlayer.isOwner)
-      })
+      this._applyUsers(res.data || [])
     }).catch(err => {
       console.error('GetRoomUsers failed', err)
+    })
+  },
+
+  /**
+   * 把用户列表排成座位（公共逻辑）
+   * - 按 userId 升序得到全员一致的「发牌顺序」
+   * - 以自己为起点 (seatIndex 0) 计算每个玩家在桌面上的座位
+   * - 重新拉取时按 userId 合并已发的手牌
+   */
+  _applyUsers(users) {
+    const sorted = users.slice().sort((a, b) => a.userId - b.userId)
+    const N = sorted.length
+    const selfId = this.data.selfUserId
+    let selfCanonicalIdx = sorted.findIndex(u => u.userId == selfId)
+    if (selfCanonicalIdx < 0) selfCanonicalIdx = 0
+
+    const prevMap = {}
+    this.data.players.forEach(p => { prevMap[p.userId] = p })
+
+    const players = sorted.map((u, i) => {
+      const seatIndex = (i - selfCanonicalIdx + N) % N
+      const prev = prevMap[u.userId]
+      const hand = (prev && prev.hand) || []
+      return {
+        userId: u.userId,
+        userName: u.userName || '匿名',
+        isOwner: !!u.isOwner,
+        isSelf: u.userId == selfId,
+        seatIndex,
+        positionStyle: this._computeSeatPosition(seatIndex, N),
+        hand,
+        cardCount: hand.length,
+        displayCount: Math.min(hand.length, 5)
+      }
+    })
+
+    const selfPlayer = players.find(p => p.isSelf) || null
+    this.setData({
+      players,
+      otherPlayers: players.filter(p => !p.isSelf),
+      selfPlayer,
+      isHost: !!(selfPlayer && selfPlayer.isOwner)
+    })
+  },
+
+  /**
+   * 按 N 等分椭圆计算座位位置（self 在底部正中，逆时针分布）
+   * - 椭圆中心 (50%, 50%)，半径 TABLE_RX / TABLE_RY
+   * - seatIndex 0 = self（用 .seat-self 渲染，返回空字符串）
+   * - seatIndex i 的角度 = i * (360 / N)，从底部逆时针
+   */
+  _computeSeatPosition(seatIndex, N) {
+    if (seatIndex === 0 || N <= 1) return ''
+    const angle = (seatIndex * 2 * Math.PI) / N
+    const x = TABLE_CX - TABLE_RX * Math.sin(angle)
+    const y = TABLE_CY + TABLE_RY * Math.cos(angle)
+    return `left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;transform:translate(-50%,-50%);`
+  },
+
+  // ============ Mock 调试 ============
+
+  _loadMockPlayers(count) {
+    const selfId = this.data.selfUserId || 1
+    const names = ['张三', '李四', '王五', '赵六', '钱七', '孙八', '周九']
+    const users = [{
+      userId: selfId,
+      userName: '我',
+      isOwner: true
+    }]
+    for (let i = 0; i < count - 1; i++) {
+      users.push({
+        userId: 1000 + i,
+        userName: names[i] || ('玩家' + (i + 2)),
+        isOwner: false
+      })
+    }
+    this._applyUsers(users)
+  },
+
+  mockSetCount(e) {
+    const count = Number(e.currentTarget.dataset.count) || 4
+    this.setData({ mockCount: count })
+    this._loadMockPlayers(count)
+  },
+
+  mockDealSelf() {
+    if (!this.data.selfPlayer) return
+    const suits = ['spade', 'heart', 'diamond', 'club']
+    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+    const players = this.data.players.map(p => {
+      if (!p.isSelf) return p
+      const hand = []
+      for (let i = 0; i < 5; i++) {
+        const suit = suits[i % suits.length]
+        const rank = ranks[(i * 3) % ranks.length]
+        hand.push({
+          id: 'mock-' + i,
+          isRed: suit === 'heart' || suit === 'diamond',
+          rankLabel: rank,
+          suitSymbol: SUIT_SYMBOLS[suit]
+        })
+      }
+      return { ...p, hand, cardCount: hand.length, displayCount: Math.min(hand.length, 5) }
+    })
+    this.setData({
+      players,
+      otherPlayers: players.filter(p => !p.isSelf),
+      selfPlayer: players.find(p => p.isSelf) || this.data.selfPlayer
+    })
+  },
+
+  mockToggleStarted() {
+    this.setData({ gameStarted: !this.data.gameStarted })
+  },
+
+  mockDealOthers() {
+    // 给其他玩家随机发几张牌，用来观察手牌正面布局
+    const suits = ['spade', 'heart', 'diamond', 'club']
+    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+    const players = this.data.players.map(p => {
+      if (p.isSelf) return p
+      const n = Math.floor(Math.random() * 6) + 1
+      const hand = []
+      for (let i = 0; i < n; i++) {
+        const suit = suits[Math.floor(Math.random() * 4)]
+        const rank = ranks[Math.floor(Math.random() * 13)]
+        hand.push({
+          id: 'mock-o-' + p.userId + '-' + i,
+          isRed: suit === 'heart' || suit === 'diamond',
+          rankLabel: rank,
+          suitSymbol: SUIT_SYMBOLS[suit]
+        })
+      }
+      return { ...p, hand, cardCount: hand.length, displayCount: Math.min(hand.length, 5) }
+    })
+    this.setData({
+      players,
+      otherPlayers: players.filter(p => !p.isSelf)
     })
   },
 

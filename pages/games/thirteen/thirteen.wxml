@@ -7,6 +7,26 @@
     <text class="nav-exit-text">退出</text>
   </view>
 
+  <!-- Mock 调试面板（仅 mock 模式显示） -->
+  <view class="mock-panel" wx:if="{{mockMode}}">
+    <view class="mock-row">
+      <text class="mock-label">人数</text>
+      <text
+        class="mock-btn {{mockCount === n ? 'is-active' : ''}}"
+        wx:for="{{[2,3,4,5,6,7,8]}}"
+        wx:for-item="n"
+        wx:key="*this"
+        data-count="{{n}}"
+        bindtap="mockSetCount"
+      >{{n}}</text>
+    </view>
+    <view class="mock-row">
+      <text class="mock-btn" bindtap="mockToggleStarted">{{gameStarted ? '切到等待' : '切到对局中'}}</text>
+      <text class="mock-btn" bindtap="mockDealSelf">给我 5 张牌</text>
+      <text class="mock-btn" bindtap="mockDealOthers">他人随机牌数</text>
+    </view>
+  </view>
+
   <!-- ===== 连接中 ===== -->
   <view class="connecting" wx:if="{{phase === 'connecting'}}">
     <text class="connecting-text">正在创建房间…</text>
@@ -22,12 +42,21 @@
       wx:key="userId"
       style="{{p.positionStyle}}"
     >
+      <text class="seat-crown" wx:if="{{p.isOwner}}">👑</text>
       <view class="seat-avatar">{{p.userName[0] || '?'}}</view>
-      <text class="seat-name">{{p.userName}}{{p.isOwner ? ' 👑' : ''}}</text>
+      <text class="seat-name">{{p.userName}}</text>
       <view class="seat-fan">
-        <view class="card-back" wx:for="{{p.displayCount}}" wx:for-item="c" wx:key="*this"></view>
+        <view class="mini-card {{c.isRed ? 'is-red' : 'is-black'}}" wx:for="{{p.hand}}" wx:for-item="c" wx:key="id">
+          <view class="mini-card-corner mini-card-tl">
+            <text class="mini-card-rank">{{c.rankLabel}}</text>
+            <text class="mini-card-suit">{{c.suitSymbol}}</text>
+          </view>
+          <view class="mini-card-corner mini-card-br">
+            <text class="mini-card-rank">{{c.rankLabel}}</text>
+            <text class="mini-card-suit">{{c.suitSymbol}}</text>
+          </view>
+        </view>
       </view>
-      <text class="seat-count">{{p.cardCount}}张</text>
     </view>
 
     <!-- 中央：未开始显示「开始游戏」/ 等待文案；已开始显示牌堆 + 发牌按钮 -->
@@ -63,22 +92,33 @@
     <!-- 自己（底部） -->
     <view class="seat-self" wx:if="{{selfPlayer}}">
       <view class="self-header">
-        <view class="self-avatar {{selfPlayer.isOwner ? 'is-owner' : ''}}">{{selfPlayer.userName[0] || '?'}}</view>
+        <view class="self-avatar-wrap">
+          <text class="seat-crown" wx:if="{{selfPlayer.isOwner}}">👑</text>
+          <view class="self-avatar {{selfPlayer.isOwner ? 'is-owner' : ''}}">{{selfPlayer.userName[0] || '?'}}</view>
+        </view>
         <view class="self-meta">
-          <text class="self-name">{{selfPlayer.userName}}（我）{{selfPlayer.isOwner ? '👑' : ''}}</text>
-          <view class="self-sub">
-            <text class="self-count" bindtap="copyRoomId">手牌 {{selfPlayer.cardCount}} 张 · 房间 {{roomId}}</text>
-            <button class="self-invite-btn" open-type="share">📤</button>
-          </view>
+          <text class="self-name">{{selfPlayer.userName}}</text>
         </view>
       </view>
       <view class="self-hand">
         <view class="play-card {{c.isRed ? 'is-red' : 'is-black'}}" wx:for="{{selfPlayer.hand}}" wx:for-item="c" wx:key="id">
-          <text class="play-card-rank">{{c.rankLabel}}</text>
-          <text class="play-card-suit">{{c.suitSymbol}}</text>
+          <view class="card-corner card-tl">
+            <text class="card-rank">{{c.rankLabel}}</text>
+            <text class="card-suit">{{c.suitSymbol}}</text>
+          </view>
+          <view class="card-corner card-br">
+            <text class="card-rank">{{c.rankLabel}}</text>
+            <text class="card-suit">{{c.suitSymbol}}</text>
+          </view>
         </view>
         <view class="self-empty" wx:if="{{selfPlayer.cardCount === 0}}">还没有牌</view>
       </view>
     </view>
+
+    <!-- 左下角：房间号 -->
+    <view class="room-id-box" bindtap="copyRoomId">房间 {{roomId}}</view>
+
+    <!-- 右下角：邀请好友 -->
+    <button class="invite-btn" open-type="share">邀请好友</button>
   </view>
 </view>

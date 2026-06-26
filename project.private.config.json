@@ -17,5 +17,18 @@
     "checkInvalidKey": true,
     "ignoreDevUnusedFiles": true,
     "bigPackageSizeSupport": false
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "Mock 面板",
+          "pathName": "pages/games/thirteen/thirteen",
+          "query": "mock=1&players=8&started=1",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
   }
 }
