@@ -1,10 +1,12 @@
 .container {
   padding: 30rpx;
   padding-top: 80rpx;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .hint-text {
@@ -123,4 +125,184 @@
 .next-btn {
   margin-top: 48rpx;
   width: 400rpx;
+}
+
+/* ===== 编辑入口 ===== */
+.edit-toggle {
+  margin-top: 24rpx;
+  margin-bottom: 16rpx;
+  padding: 16rpx 32rpx;
+  color: #5ECFAA;
+  font-size: 28rpx;
+}
+
+/* ===== 遮罩层 ===== */
+.drawer-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 100;
+}
+
+.drawer-mask.mask-show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== 底部抽屉 ===== */
+.edit-drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #F7FAF8;
+  border-radius: 28rpx 28rpx 0 0;
+  padding: 0 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.12);
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 101;
+  max-height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-drawer.drawer-show {
+  transform: translateY(0);
+}
+
+.drawer-handle {
+  width: 64rpx;
+  height: 8rpx;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 4rpx;
+  margin: 16rpx auto 8rpx;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 0 16rpx;
+}
+
+.drawer-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2E3A3A;
+}
+
+.drawer-close {
+  font-size: 32rpx;
+  color: #9AA5A0;
+  padding: 8rpx 16rpx;
+}
+
+/* Tab 切换 */
+.tab-bar {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+  color: #7A9E8E;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  border: 2rpx solid transparent;
+}
+
+.tab-item.active.truth-active {
+  color: #FFFFFF;
+  background: #5ECFAA;
+  font-weight: bold;
+  border-color: #5ECFAA;
+}
+
+.tab-item.active.dare-active {
+  color: #FFFFFF;
+  background: #F4A261;
+  font-weight: bold;
+  border-color: #F4A261;
+}
+
+/* 添加行 */
+.add-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+  align-items: baseline;
+}
+
+.edit-input {
+  flex: 1;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 16rpx 24rpx;
+  font-size: 28rpx;
+  color: #2E3A3A;
+}
+
+.add-btn {
+  padding: 14rpx 22rpx !important;
+  font-size: 24rpx !important;
+}
+
+/* 列表滚动区 */
+.item-scroll {
+  flex: 1;
+  overflow: hidden;
+  height: 45vh;
+  padding-bottom: 50rpx;
+}
+
+.item-list {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 8rpx 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(94, 207, 170, 0.08);
+}
+
+.edit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid rgba(94, 207, 170, 0.3);
+}
+
+.edit-item:last-child {
+  border-bottom: none;
+}
+
+.edit-item-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #2E3A3A;
+  margin-right: 16rpx;
+  word-break: break-word;
+}
+
+.remove-btn {
+  color: #F4A261;
+  font-size: 32rpx;
+  padding: 0 16rpx;
+}
+
+.empty-tip {
+  text-align: center;
+  color: #9AA5A0;
+  font-size: 26rpx;
+  padding: 32rpx 0;
 }

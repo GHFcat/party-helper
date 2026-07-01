@@ -77,6 +77,12 @@
   font-weight: bold;
 }
 
+.mock-tip {
+  font-size: 11rpx;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2rpx;
+}
+
 /* ===== 连接中 ===== */
 .connecting {
   position: absolute;
@@ -116,6 +122,7 @@
 }
 
 .seat-avatar {
+  position: relative;
   width: 40rpx;
   height: 40rpx;
   border-radius: 50%;
@@ -128,6 +135,32 @@
   justify-content: center;
   border: 2rpx solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+/* 离线：头像变灰 + 黑色遮罩 + 离线字样 */
+.seat-avatar.is-offline,
+.self-avatar.is-offline {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.seat-offline-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.seat-offline-text {
+  color: #FFFFFF;
+  font-size: 12rpx;
+  line-height: 1;
+  font-weight: bold;
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.6);
 }
 
 .seat.is-active .seat-avatar {
@@ -314,6 +347,7 @@
 }
 
 .self-avatar {
+  position: relative;
   width: 36rpx;
   height: 36rpx;
   border-radius: 50%;
@@ -325,6 +359,7 @@
   align-items: center;
   justify-content: center;
   border: 2rpx solid rgba(255, 255, 255, 0.6);
+  overflow: hidden;
 }
 
 .self-avatar.is-owner {

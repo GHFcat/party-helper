@@ -34,4 +34,65 @@
     </view>
     <button class="btn-primary next-btn" bindtap="nextRound">下一轮</button>
   </view>
+
+  <!-- 编辑入口 -->
+  <view class="edit-toggle" bindtap="showEditPanel">
+    <text>✏️ 自定义题目</text>
+  </view>
+
+  <!-- 遮罩 -->
+  <view class="drawer-mask {{showEditor ? 'mask-show' : ''}}" bindtap="showEditPanel" catchtouchmove="noop"></view>
+
+  <!-- 自定义抽屉 -->
+  <view class="edit-drawer {{showEditor ? 'drawer-show' : ''}}" catchtouchmove="noop">
+    <view class="drawer-handle"></view>
+    <view class="drawer-header">
+      <text class="drawer-title">自定义题目</text>
+      <text class="drawer-close" bindtap="showEditPanel">✕</text>
+    </view>
+
+    <!-- Tab 切换 -->
+    <view class="tab-bar">
+      <text
+        class="tab-item {{editorTab === 'truth' ? 'active truth-active' : ''}}"
+        data-tab="truth"
+        bindtap="switchEditorTab"
+      >真心话 ({{truthQuestions.length}})</text>
+      <text
+        class="tab-item {{editorTab === 'dare' ? 'active dare-active' : ''}}"
+        data-tab="dare"
+        bindtap="switchEditorTab"
+      >大冒险 ({{dareQuestions.length}})</text>
+    </view>
+
+    <view class="add-row">
+      <input
+        class="edit-input"
+        placeholder="输入{{editorTab === 'truth' ? '真心话' : '大冒险'}}题目"
+        value="{{newItemText}}"
+        bindinput="onNewItemInput"
+        bindconfirm="addItem"
+      />
+      <button class="btn-primary add-btn" bindtap="addItem">添加</button>
+    </view>
+
+    <scroll-view scroll-y class="item-scroll">
+      <view class="item-list">
+        <block wx:if="{{editorTab === 'truth'}}">
+          <view class="edit-item" wx:for="{{truthQuestions}}" wx:key="index">
+            <text class="edit-item-text">{{item.content}}</text>
+            <text class="remove-btn" data-tab="truth" data-index="{{index}}" bindtap="removeItem">✕</text>
+          </view>
+          <view class="empty-tip" wx:if="{{truthQuestions.length === 0}}">还没有真心话题目</view>
+        </block>
+        <block wx:else>
+          <view class="edit-item" wx:for="{{dareQuestions}}" wx:key="index">
+            <text class="edit-item-text">{{item.content}}</text>
+            <text class="remove-btn" data-tab="dare" data-index="{{index}}" bindtap="removeItem">✕</text>
+          </view>
+          <view class="empty-tip" wx:if="{{dareQuestions.length === 0}}">还没有大冒险题目</view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
 </view>

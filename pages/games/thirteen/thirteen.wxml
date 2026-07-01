@@ -24,6 +24,10 @@
       <text class="mock-btn" bindtap="mockToggleStarted">{{gameStarted ? '切到等待' : '切到对局中'}}</text>
       <text class="mock-btn" bindtap="mockDealSelf">给我 5 张牌</text>
       <text class="mock-btn" bindtap="mockDealOthers">他人随机牌数</text>
+      <text class="mock-btn" bindtap="mockToggleSelfOffline">{{selfPlayer.isOffline ? '我上线' : '我离线'}}</text>
+    </view>
+    <view class="mock-row" wx:if="{{mockMode}}">
+      <text class="mock-tip">提示：点击任意玩家头像可切换其离线状态</text>
     </view>
   </view>
 
@@ -41,9 +45,16 @@
       wx:for-item="p"
       wx:key="userId"
       style="{{p.positionStyle}}"
+      data-userid="{{p.userId}}"
+      bindtap="mockToggleSeatOffline"
     >
       <text class="seat-crown" wx:if="{{p.isOwner}}">👑</text>
-      <view class="seat-avatar">{{p.userName[0] || '?'}}</view>
+      <view class="seat-avatar {{p.isOffline ? 'is-offline' : ''}}">
+        <text>{{p.userName[0] || '?'}}</text>
+        <view class="seat-offline-mask" wx:if="{{p.isOffline}}">
+          <text class="seat-offline-text">离线</text>
+        </view>
+      </view>
       <text class="seat-name">{{p.userName}}</text>
       <view class="seat-fan">
         <view class="mini-card {{c.isRed ? 'is-red' : 'is-black'}}" wx:for="{{p.hand}}" wx:for-item="c" wx:key="id">
@@ -94,7 +105,12 @@
       <view class="self-header">
         <view class="self-avatar-wrap">
           <text class="seat-crown" wx:if="{{selfPlayer.isOwner}}">👑</text>
-          <view class="self-avatar {{selfPlayer.isOwner ? 'is-owner' : ''}}">{{selfPlayer.userName[0] || '?'}}</view>
+          <view class="self-avatar {{selfPlayer.isOwner ? 'is-owner' : ''}} {{selfPlayer.isOffline ? 'is-offline' : ''}}">
+            <text>{{selfPlayer.userName[0] || '?'}}</text>
+            <view class="seat-offline-mask" wx:if="{{selfPlayer.isOffline}}">
+              <text class="seat-offline-text">离线</text>
+            </view>
+          </view>
         </view>
         <view class="self-meta">
           <text class="self-name">{{selfPlayer.userName}}</text>

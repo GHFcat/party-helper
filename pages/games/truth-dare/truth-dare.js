@@ -7,7 +7,11 @@ Page({
     currentCard: null,
     truthQuestions: [],
     dareQuestions: [],
-    selectedIndex: -1
+    selectedIndex: -1,
+    // 自定义题目编辑面板
+    showEditor: false,
+    editorTab: 'truth',   // truth | dare
+    newItemText: ''
   },
 
   onLoad(options) {
@@ -79,5 +83,51 @@ Page({
    */
   nextRound() {
     this.setData({ phase: 'choose', currentCard: null, selectedIndex: -1 })
-  }
+  },
+
+  // ============ 自定义题目 ============
+
+  showEditPanel() {
+    this.setData({ showEditor: !this.data.showEditor })
+  },
+
+  switchEditorTab(e) {
+    const tab = e.currentTarget.dataset.tab
+    if (tab && tab !== this.data.editorTab) {
+      this.setData({ editorTab: tab, newItemText: '' })
+    }
+  },
+
+  onNewItemInput(e) {
+    this.setData({ newItemText: e.detail.value })
+  },
+
+  addItem() {
+    const text = (this.data.newItemText || '').trim()
+    if (!text) return
+    const isTruth = this.data.editorTab === 'truth'
+    const newItem = { type: isTruth ? 1 : 2, content: text }
+    const list = isTruth ? this.data.truthQuestions : this.data.dareQuestions
+    const newList = [...list, newItem]
+    if (isTruth) {
+      this.setData({ truthQuestions: newList, newItemText: '' })
+    } else {
+      this.setData({ dareQuestions: newList, newItemText: '' })
+    }
+  },
+
+  removeItem(e) {
+    const { tab, index } = e.currentTarget.dataset
+    const i = Number(index)
+    const isTruth = tab === 'truth'
+    const list = isTruth ? this.data.truthQuestions : this.data.dareQuestions
+    const newList = list.filter((_, idx) => idx !== i)
+    if (isTruth) {
+      this.setData({ truthQuestions: newList })
+    } else {
+      this.setData({ dareQuestions: newList })
+    }
+  },
+
+  noop() {}
 })

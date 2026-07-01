@@ -34,6 +34,8 @@ Page({
     remaining: TOTAL_CARDS,
     totalCards: TOTAL_CARDS,
     nextUserId: null,
+    // 离线用户索引：{ [userId]: true }，单源真相
+    offlineUserIds: {},
     // Mock 模式（仅供单机调试布局用，不入 SignalR 流程）
     mockMode: false,
     mockCount: 4
@@ -93,12 +95,14 @@ Page({
 
     this._userJoinedHandler = (d) => this._onUserJoined(d)
     this._userLeftHandler = (d) => this._onUserLeft(d)
+    this._userOfflineHandler = (d) => this._onUserOffline(d)
     this._gameStartedHandler = () => this._onGameStarted()
     this._cardDealtHandler = (d) => this._onCardDealt(d)
     this._gameRestartedHandler = (d) => this._onGameRestarted(d)
 
     conn.on('UserJoined', this._userJoinedHandler)
     conn.on('UserLeft', this._userLeftHandler)
+    conn.on('UserOffline', this._userOfflineHandler)
     conn.on('GameStarted', this._gameStartedHandler)
     conn.on('CardDealt', this._cardDealtHandler)
     conn.on('GameRestarted', this._gameRestartedHandler)
@@ -109,6 +113,7 @@ Page({
     if (!conn) return
     if (this._userJoinedHandler) conn.off('UserJoined', this._userJoinedHandler)
     if (this._userLeftHandler) conn.off('UserLeft', this._userLeftHandler)
+    if (this._userOfflineHandler) conn.off('UserOffline', this._userOfflineHandler)
     if (this._gameStartedHandler) conn.off('GameStarted', this._gameStartedHandler)
     if (this._cardDealtHandler) conn.off('CardDealt', this._cardDealtHandler)
     if (this._gameRestartedHandler) conn.off('GameRestarted', this._gameRestartedHandler)
@@ -168,13 +173,50 @@ Page({
     this._loadTablePlayers()
   },
 
-  _onUserJoined() {
-    // 直接在牌桌上重排座位（保留已发的手牌）
+  _onUserJoined(data) {
+    // 用户加入（可能是离线后重连）→ 清除离线标记再重排
+    const userId = data && (data.userId || data.UserId)
+    if (userId != null && this.data.offlineUserIds[userId]) {
+      const offlineUserIds = { ...this.data.offlineUserIds }
+      delete offlineUserIds[userId]
+      this.setData({ offlineUserIds })
+    }
     this._loadTablePlayers()
   },
 
   _onUserLeft() {
     this._loadTablePlayers()
+  },
+
+  /**
+   * 用户离线：保留座位和手牌，仅标记离线
+   * 后端广播载荷预期：{ userId, ... }
+   */
+  _onUserOffline(data) {
+    const userId = data && (data.userId || data.UserId)
+    if (userId == null) return
+    this._setUserOffline(userId, true)
+  },
+
+  /**
+   * 统一改某个用户的离线状态（同时更新 map、players、selfPlayer）
+   */
+  _setUserOffline(userId, isOffline) {
+    const offlineUserIds = { ...this.data.offlineUserIds }
+    if (isOffline) offlineUserIds[userId] = true
+    else delete offlineUserIds[userId]
+    const players = this.data.players.map(p =>
+      (p.userId == userId) ? { ...p, isOffline } : p
+    )
+    const selfPlayer = (this.data.selfPlayer && this.data.selfPlayer.userId == userId)
+      ? { ...this.data.selfPlayer, isOffline }
+      : this.data.selfPlayer
+    this.setData({
+      offlineUserIds,
+      players,
+      otherPlayers: players.filter(p => !p.isSelf),
+      selfPlayer
+    })
   },
 
   // ============ 大厅操作 ============
@@ -260,6 +302,7 @@ Page({
 
     const prevMap = {}
     this.data.players.forEach(p => { prevMap[p.userId] = p })
+    const offlineUserIds = this.data.offlineUserIds || {}
 
     const players = sorted.map((u, i) => {
       const seatIndex = (i - selfCanonicalIdx + N) % N
@@ -270,6 +313,7 @@ Page({
         userName: u.userName || '匿名',
         isOwner: !!u.isOwner,
         isSelf: u.userId == selfId,
+        isOffline: !!offlineUserIds[u.userId],
         seatIndex,
         positionStyle: this._computeSeatPosition(seatIndex, N),
         hand,
@@ -381,6 +425,22 @@ Page({
       players,
       otherPlayers: players.filter(p => !p.isSelf)
     })
+  },
+
+  // Mock：点击某个座位切换其离线状态
+  mockToggleSeatOffline(e) {
+    if (!this.data.mockMode) return
+    const userId = Number(e.currentTarget.dataset.userid)
+    if (!userId) return
+    this._setUserOffline(userId, !this.data.offlineUserIds[userId])
+  },
+
+  // Mock：切换自己的离线状态
+  mockToggleSelfOffline() {
+    if (!this.data.mockMode) return
+    const selfId = this.data.selfUserId
+    if (selfId == null) return
+    this._setUserOffline(selfId, !this.data.offlineUserIds[selfId])
   },
 
   // ============ 发牌 ============
